@@ -3256,7 +3256,7 @@ function TouchHandler:onTouch(e)
         e2.prop = prop2
         self:dispatchTouchEvent(e2, prop2)
     end
-    if prop or prop2 then
+    if (prop or prop2) and e.type == Event.TOUCH_DOWN then
         e:stop()
     end
 
