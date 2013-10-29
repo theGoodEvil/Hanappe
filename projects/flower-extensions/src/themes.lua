@@ -2,6 +2,7 @@
 -- Widget Themes.
 -- 
 -- @author Makoto
+-- @release V2.1.2
 ----------------------------------------------------------------------------------------------------
 
 -- module
@@ -101,6 +102,7 @@ M.NORMAL = {
     },
     ListBox = {
         backgroundTexture = "skins/panel.9.png",
+        scrollBarTexture = "skins/scrollbar_vertical.9.png",
         rowHeight = 35,
         listItemFactory = ClassFactory(ListItem),
     },
@@ -111,9 +113,6 @@ M.NORMAL = {
         textSize = 20,
         textColor = {1, 1, 1, 1},
         textAlign = {"left", "top"},
-    },
-    PictureBox = {
-        backgroundTexture = "skins/panel.9.png",
     },
 }
 

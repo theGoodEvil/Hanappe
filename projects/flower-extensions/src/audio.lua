@@ -1,7 +1,9 @@
 ----------------------------------------------------------------------------------------------------
 -- Audio library.
+-- This allows the change of the flexible implementation.
 -- 
 -- @author Makoto
+-- @release V2.1.2
 ----------------------------------------------------------------------------------------------------
 
 -- module
@@ -14,69 +16,69 @@ local Resources = flower.Resources
 
 -- classes
 local UntzSoundMgr
+local MockSoundMgr
 --local FModSoundMgr
 
 ----------------------------------------------------------------------------------------------------
 -- Public functions
 ----------------------------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
+---
 -- Initializes the module.
 -- @param soundMgr (option) soundMgr object.
---------------------------------------------------------------------------------
 function M.init(soundMgr)
     if not M._soundMgr then
-        M._soundMgr = soundMgr or UntzSoundMgr()
+        if soundMgr then
+            M._soundMgr = soundMgr
+        elseif MOAIUntzSystem then
+            M._soundMgr = UntzSoundMgr()
+        else
+            M._soundMgr = MockSoundMgr()
+        end
     end
 end
 
---------------------------------------------------------------------------------
+---
 -- Play the sound.
 -- @param sound file path or object.
--- @param (Optional)volume. Default value is 1.
--- @param (Optional)looping flag. Default value is 'false'.
+-- @param volume (Optional)volume. Default value is 1.
+-- @param looping (Optional)looping flag. Default value is 'false'.
 -- @return Sound object
---------------------------------------------------------------------------------
 function M.play(sound, volume, looping)
     return M._soundMgr:play(sound, volume, looping)
 end
 
---------------------------------------------------------------------------------
+---
 -- Pause the sound.
 -- @param sound file path or object.
---------------------------------------------------------------------------------
 function M.pause(sound)
     M._soundMgr:pause(sound)
 end
 
---------------------------------------------------------------------------------
+---
 -- Stop the sound.
 -- @param sound file path or object.
---------------------------------------------------------------------------------
 function M.stop(sound)
     M._soundMgr:stop(sound)
 end
 
---------------------------------------------------------------------------------
+---
 -- Set the system level volume.
 -- @param volume volume(0 <= volume <= 1)
---------------------------------------------------------------------------------
 function M.setVolume(volume)
     M._soundMgr:setVolume(volume)
 end
 
---------------------------------------------------------------------------------
+---
 -- Return the system level volume.
 -- @return volume
---------------------------------------------------------------------------------
 function M.getVolume(volume)
     M._soundMgr:getVolume()
 end
 
---------------------------------------------------------------------------------
+---
 -- Return SoundMgr a singleton.
 -- @return soundMgr
---------------------------------------------------------------------------------
 function M.getSoundMgr()
     return M._soundMgr
 end
@@ -95,9 +97,10 @@ UntzSoundMgr.SAMPLE_RATE = nil
 --- numFrames
 UntzSoundMgr.NUM_FRAMES = nil
 
---------------------------------------------------------------------------------
+---
 -- Constructor.
---------------------------------------------------------------------------------
+-- @param sampleRate sample rate
+-- @param numFrames num frames
 function UntzSoundMgr:init(sampleRate, numFrames)
     if not MOAIUntzSystem._initialized then
         sampleRate = sampleRate or UntzSoundMgr.SAMPLE_RATE
@@ -109,11 +112,10 @@ function UntzSoundMgr:init(sampleRate, numFrames)
     self._soundMap = {}
 end
 
---------------------------------------------------------------------------------
+---
 -- Load the MOAIUntzSound.
 -- @param filePath file path.
 -- @return sound
---------------------------------------------------------------------------------
 function UntzSoundMgr:loadSound(filePath)
     local sound = MOAIUntzSound.new()
     sound:load(filePath)
@@ -122,11 +124,10 @@ function UntzSoundMgr:loadSound(filePath)
     return sound
 end
 
---------------------------------------------------------------------------------
+---
 -- Return the MOAIUntzSound cached.
 -- @param filePath file path.
 -- @return sound
---------------------------------------------------------------------------------
 function UntzSoundMgr:getSound(filePath)
     filePath = Resources.getResourceFilePath(filePath)
     
@@ -137,24 +138,22 @@ function UntzSoundMgr:getSound(filePath)
     return self._soundMap[filePath]
 end
 
---------------------------------------------------------------------------------
+---
 -- Release the MOAIUntzSound.
 -- @param filePath file path.
 -- @return cached sound.
---------------------------------------------------------------------------------
 function UntzSoundMgr:release(filePath)
     local sound = self._soundMap[filePath]
     self._soundMap[filePath] = nil
     return sound
 end
 
---------------------------------------------------------------------------------
+---
 -- Play the sound.
 -- @param sound file path or object.
--- @param (Optional)volume. Default value is 1.
--- @param (Optional)looping flag. Default value is 'false'.
+-- @param volume (Optional)volume. Default value is 1.
+-- @param looping (Optional)looping flag. Default value is 'false'.
 -- @return Sound object
---------------------------------------------------------------------------------
 function UntzSoundMgr:play(sound, volume, looping)
     sound = type(sound) == "string" and self:getSound(sound) or sound
     volume = volume or 1
@@ -166,39 +165,68 @@ function UntzSoundMgr:play(sound, volume, looping)
     return sound
 end
 
---------------------------------------------------------------------------------
+---
 -- Pause the sound.
 -- @param sound file path or object.
---------------------------------------------------------------------------------
 function UntzSoundMgr:pause(sound)
     sound = type(sound) == "string" and self:getSound(sound) or sound
     sound:pause()
 end
 
---------------------------------------------------------------------------------
+---
 -- Stop the sound.
 -- @param sound file path or object.
---------------------------------------------------------------------------------
 function UntzSoundMgr:stop(sound)
     sound = type(sound) == "string" and self:getSound(sound) or sound
     sound:stop()
 end
 
---------------------------------------------------------------------------------
+---
 -- Set the system level volume.
 -- @param volume
---------------------------------------------------------------------------------
 function UntzSoundMgr:setVolume(volume)
    MOAIUntzSystem.setVolume(volume)
 end
 
---------------------------------------------------------------------------------
+---
 -- Return the system level volume.
 -- @return volume
---------------------------------------------------------------------------------
 function UntzSoundMgr:getVolume()
    return MOAIUntzSystem.getVolume()
 end
 
+----------------------------------------------------------------------------------------------------
+-- @type MockSoundMgr
+-- 
+-- Mock for the environment without Sound.
+----------------------------------------------------------------------------------------------------
+MockSoundMgr = class()
+M.MockSoundMgr = MockSoundMgr
+
+---
+-- Constructor.
+function MockSoundMgr:init()
+end
+
+function MockSoundMgr:loadSound(filePath)
+end
+
+function MockSoundMgr:getSound(filePath)
+end
+
+function MockSoundMgr:play(sound, volume, looping)
+end
+
+function MockSoundMgr:pause(sound)
+end
+
+function MockSoundMgr:stop(sound)
+end
+
+function MockSoundMgr:setVolume(volume)
+end
+
+function MockSoundMgr:getVolume()
+end
 
 return M
