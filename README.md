@@ -3,32 +3,27 @@
 # Hanappe Projects
 
 ## Introduction
-Open source framework for [Moai SDK](http://getmoai.com).
+Open source framework for [Moai SDK](https://github.com/moai/moai-dev).
 
 
 ## SDK Version
 I have been tested on the following versions.
 However, it supports the latest version basically.
 
-* Moai SDK Release 1.4p0
-
-* Moai SDK Last Build
-
-Binary release old.
-At present, it may be better to compile from the source would be better.[moai-dev](https://github.com/moai/moai-dev)
+* Moai SDK Release 1.5
 
 ## Tools Version
 Tool version being used by the Hanappe is as follows.
 You are not necessarily required.
 
 * [Lua Development Tools 0.9](http://www.eclipse.org/koneki/ldt/)
-* [Apache Ant version 1.8.2](http://ant.apache.org/)
+* [Apache Ant version 1.9.3](http://ant.apache.org/)
 * [LDoc version 1.3.3](https://github.com/stevedonovan/LDoc)
 
 ## Tests
 The terminal work as follows.
 
-* Mac OSX 10.8.2
+* Mac OSX 10.9.1
 * iPhone Simulator
 * Windows 7
 * Android 4.1 (Nexus 7)
