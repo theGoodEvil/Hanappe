@@ -5,6 +5,8 @@
 -- @release V3.0.0
 ----------------------------------------------------------------------------------------------------
 
+local Viewport = require "flower.Viewport"
+
 -- class
 local SceneAnimations = {}
 
