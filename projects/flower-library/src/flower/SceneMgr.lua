@@ -26,6 +26,10 @@ local SceneAnimations = require "flower.SceneAnimations"
 -- class
 local SceneMgr = EventDispatcher()
 
+-- give out a reference to scene animations, so they also can call the scene manager
+SceneAnimations.SceneMgr = SceneMgr
+
+
 -- variables
 SceneMgr.scenes = {}
 SceneMgr.currentScene = nil
@@ -98,10 +102,10 @@ function SceneMgr:internalOpenScene(sceneName, params, currentCloseFlag)
     -- create next scene
     self.nextScene = self:createScene(sceneName, params)
     self.nextScene:open(params)
-    self:addScene(self.nextScene)
 
     -- scene animation
     local funAnimation = function()
+    self:addScene(self.nextScene)
         local animation = self:getSceneAnimationByName(params.animation)
         animation(self.currentScene or self.sceneClass(), self.nextScene, params)
 
@@ -235,6 +239,24 @@ end
 function SceneMgr:addScene(scene)
     RenderMgr:invalidate()
     return table.insertIfAbsent(self.scenes, scene)
+end
+
+---
+-- Brings a scene on top of the scene priority list
+-- @param scene scene
+function SceneMgr:displayOnTop(scene)
+    local index
+    index = 0
+    for i, s in ipairs(self.scenes) do
+        if s == scene then
+            index = i
+        end
+    end
+    if index > 0 and index < #self.scenes then
+        RenderMgr:invalidate()
+        table.remove(self.scenes, index)
+        table.insert(self.scenes, scene)        
+    end
 end
 
 ---

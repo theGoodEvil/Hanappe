@@ -91,9 +91,6 @@ end
 function SceneAnimations.slideLeft(currentScene, nextScene, params)
     local sec = params.second or 0.5
     local easeType = params.easeType
-
-    -- TODO: this is kind of a hot fix. the intended thing to do is to slide left the whole scene and attach the next scene on the right.
-    --       this is not possible right now, beause scenes do not report their correct width. instead, we take the viewport and cut off the rest of the scene
     local sw = Viewport.getDefaultViewport().viewWidth
 
     nextScene:setVisible(true)
@@ -112,8 +109,9 @@ end
 function SceneAnimations.slideRight(currentScene, nextScene, params)
     local sec = params.second or 0.5
     local easeType = params.easeType
-    local sw, sh = currentScene:getSize()
+    local sw = Viewport.getDefaultViewport().viewWidth
 
+    SceneAnimations.SceneMgr:displayOnTop(currentScene) -- suboptimal design: rely on the scene manager to register here itself
     nextScene:setVisible(true)
     nextScene:setPos(-sw, 0)
 
