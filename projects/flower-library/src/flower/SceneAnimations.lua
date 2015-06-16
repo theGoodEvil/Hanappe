@@ -91,7 +91,7 @@ end
 function SceneAnimations.slideLeft(currentScene, nextScene, params)
     local sec = params.second or 0.5
     local easeType = params.easeType
-    local sw = Viewport.getDefaultViewport().viewWidth
+    local sw = MOAIEnvironment.horizontalResolution
 
     nextScene:setVisible(true)
     nextScene:setPos(sw, 0)
@@ -109,7 +109,7 @@ end
 function SceneAnimations.slideRight(currentScene, nextScene, params)
     local sec = params.second or 0.5
     local easeType = params.easeType
-    local sw = Viewport.getDefaultViewport().viewWidth
+    local sw = MOAIEnvironment.horizontalResolution
 
     SceneAnimations.SceneMgr:displayOnTop(currentScene) -- suboptimal design: rely on the scene manager to register here itself
     nextScene:setVisible(true)
